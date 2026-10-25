@@ -17,6 +17,7 @@ import {
 } from "./urlHelpers";
 import { isForbiddenCustomHeaderName } from "@/shared/constants/upstreamHeaders";
 import { applyCustomUserAgent } from "./headers";
+import { isAnthropicOAuthToken } from "../anthropicKeyClassifier";
 import { toValidationErrorResult, validationRead, validationWrite } from "./transport";
 
 export async function validateAnthropicLikeProvider({
@@ -32,7 +33,7 @@ export async function validateAnthropicLikeProvider({
       return { valid: false, error: "Missing base URL" };
     }
 
-    if (typeof apiKey === "string" && apiKey.startsWith("sk-ant-oat")) {
+    if (isAnthropicOAuthToken(apiKey)) {
       return validateClaudeOAuthInline({ apiKey, modelId, providerSpecificData });
     }
 
