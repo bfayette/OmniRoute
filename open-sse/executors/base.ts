@@ -69,6 +69,7 @@ import {
 } from "../services/claudeCodeCompatible.ts";
 import { getClaudeCodeCompatibleRequestDefaults } from "@/lib/providers/requestDefaults";
 import { parseTokenExpiryMs } from "@/lib/tokenHealthCheckExpiry";
+import { isAnthropicOAuthToken } from "../../src/lib/providers/anthropicKeyClassifier";
 import {
   cloakThirdPartyToolNames,
   remapToolNamesInRequest,
@@ -1013,8 +1014,7 @@ export class BaseExecutor {
         // traffic. Apply the cloak whenever we have an OAuth token, regardless
         // of upstream client.
         const hasClaudeOAuthToken =
-          typeof activeCredentials?.accessToken === "string" &&
-          activeCredentials.accessToken.startsWith("sk-ant-oat") &&
+          isAnthropicOAuthToken(activeCredentials?.accessToken) &&
           !activeCredentials?.apiKey;
 
         if (

@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { CLAUDE_CONFIG } from "../constants/oauth";
 import { getClaudeCodeVersion } from "@omniroute/open-sse/executors/claudeIdentity.ts";
 import { validateClaudeOAuthInline } from "@/lib/providers/validation/anthropicFormat";
+import { isAnthropicOAuthToken } from "@/lib/providers/anthropicKeyClassifier";
 
 const SETUP_TOKEN_PREFIX = "sk-ant-oat";
 
@@ -99,7 +100,7 @@ class ClaudeSetupTokenError extends Error {
  */
 async function importSetupToken(token: unknown) {
   const accessToken = typeof token === "string" ? token.trim() : "";
-  if (!accessToken.startsWith(SETUP_TOKEN_PREFIX)) {
+  if (!isAnthropicOAuthToken(accessToken)) {
     throw new ClaudeSetupTokenError(
       `Expected a token from \`claude setup-token\` (starts with ${SETUP_TOKEN_PREFIX})`
     );

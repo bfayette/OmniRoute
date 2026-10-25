@@ -12,6 +12,7 @@
  * claudeLowPriority.ts for the wire contract and the lifecycle.
  */
 
+import { isAnthropicOAuthToken } from "../../src/lib/providers/anthropicKeyClassifier.ts";
 import { attemptClaudeLimitReset } from "../services/claudeLimitReset.ts";
 import {
   CLAUDE_USAGE_LIMIT_HEADER,
@@ -43,8 +44,7 @@ export type ClaudeUsageLimitRetryInput = {
 function isClaudeOAuth(provider: string, credentials?: ProviderCredentials | null): boolean {
   return (
     provider === "claude" &&
-    typeof credentials?.accessToken === "string" &&
-    credentials.accessToken.startsWith("sk-ant-oat") &&
+    isAnthropicOAuthToken(credentials?.accessToken) &&
     !credentials?.apiKey
   );
 }
